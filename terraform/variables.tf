@@ -17,9 +17,9 @@ variable "environment" {
 }
 
 variable "vpc_cidr" {
-   description = "CIDR block for VPC"
-   type        = string 
-   default     = "10.0.0.0/22"
+  description = "CIDR block for VPC"
+  type        = string
+  default     = "10.0.0.0/22"
 }
 
 variable "public_subnet_cidrs" {
@@ -32,4 +32,10 @@ variable "private_subnet_cidrs" {
   description = "CIDR blocks for private subnets"
   type        = list(string)
   default     = ["10.0.2.0/24", "10.0.3.0/24"]
+}
+
+variable "ecs_port" {
+  description = "port for application container to call"
+  type        = number
+  default     = 8080
 }

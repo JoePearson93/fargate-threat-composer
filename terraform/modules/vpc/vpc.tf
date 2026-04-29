@@ -18,10 +18,10 @@ data "aws_availability_zones" "available" {
 # Public Subnets (One per AZ)
 
 resource "aws_subnet" "public" {
-  count             = length(var.public_subnet_cidrs)
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.public_subnet_cidrs[count.index]
-  availability_zone = data.aws_availability_zones.available.names[count.index]
+  count                   = length(var.public_subnet_cidrs)
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.public_subnet_cidrs[count.index]
+  availability_zone       = data.aws_availability_zones.available.names[count.index]
   map_public_ip_on_launch = true
 
   tags = {
@@ -39,8 +39,8 @@ resource "aws_subnet" "private" {
   availability_zone = data.aws_availability_zones.available.names[count.index]
 
   tags = {
-  Name = "${var.project_name}-private-subnet-${count.index == 0 ? "A" : "B"}"
-  Type = "private"
+    Name = "${var.project_name}-private-subnet-${count.index == 0 ? "A" : "B"}"
+    Type = "private"
   }
 }
 
@@ -66,7 +66,7 @@ resource "aws_eip" "nat" {
   depends_on = [aws_internet_gateway.main]
 
 }
-  
+
 # NAT Gateway
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
