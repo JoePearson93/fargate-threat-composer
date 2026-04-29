@@ -12,3 +12,8 @@ variable "ecs_port" {
   description = "port for application container to call"
   type        = number
 }
+
+variable "environment" {
+  description = "The environment name (dev, staging, prod)"
+  type        = string
+}

@@ -7,7 +7,7 @@ resource "aws_vpc" "main" {
 
   tags = {
     Name        = "${var.project_name}-vpc"
-    Environment = var.environment
+    environment = var.environment
   }
 }
 
@@ -51,6 +51,7 @@ resource "aws_internet_gateway" "main" {
 
   tags = {
     Name = "${var.project_name}-igw"
+    environment = var.environment
   }
 }
 
@@ -61,6 +62,7 @@ resource "aws_eip" "nat" {
 
   tags = {
     Name = "${var.project_name}-nat-eip"
+    environment = var.environment
   }
 
   depends_on = [aws_internet_gateway.main]
@@ -74,6 +76,7 @@ resource "aws_nat_gateway" "main" {
 
   tags = {
     Name = "${var.project_name}-nat-gateway"
+    environment = var.environment
   }
 
   depends_on = [aws_internet_gateway.main]
@@ -90,6 +93,7 @@ resource "aws_route_table" "public" {
 
   tags = {
     Name = "${var.project_name}-PublicRouteTable"
+    environment = var.environment
   }
 }
 
@@ -113,6 +117,7 @@ resource "aws_route_table" "private" {
 
   tags = {
     Name = "${var.project_name}-PrivateRouteTable"
+    environment = var.environment
   }
 }
 
