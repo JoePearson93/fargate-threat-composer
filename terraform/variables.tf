@@ -40,3 +40,26 @@ variable "ecs_port" {
   default     = 8080
 }
 
+variable "repository_name" {
+  description = "Name of the ECR repository"
+  type        = string
+  default     = "fargate-threat-composer"
+}
+
+variable "alb_name" {
+  description = "Name of Application Load Balancer"
+  type        = string
+  default     = "fargate-alb"
+}
+
+variable "tg_name" {
+  description = "The name of the Target Group for Application Load Balancer"
+  type        = string
+  default     = "fargate-tg"
+}
+
+variable "container_port" {
+  description = "Port the container listens on"
+  type        = number
+  default     = 8080
+}
