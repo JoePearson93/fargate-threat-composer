@@ -63,3 +63,10 @@ variable "container_port" {
   type        = number
   default     = 8080
 }
+
+variable "domain_name" {
+  description = "DNS name"
+  type        = string
+  default     = "https://tm.jpearson.com"
+}
+

@@ -26,6 +26,14 @@ module "ecr" {
 
 }
 
+module "acm"{
+  source                  = "./modules/acm"
+
+    domain_name           = var.domain_name
+    project_name          = var.project_name
+    environment           = var.environment
+}
+
 module "alb" {
   source                  = "./modules/alb"
   
@@ -37,3 +45,4 @@ module "alb" {
     environment             = var.environment
     container_port          = var.container_port
 }
+
