@@ -26,18 +26,10 @@ module "ecr" {
 
 }
 
-module "acm"{
-  source                  = "./modules/acm"
-
-    domain_name           = var.domain_name
-    project_name          = var.project_name
-    environment           = var.environment
-}
-
 module "alb" {
   source                  = "./modules/alb"
   
-    alb_name                = var.alb_name
+    alb_dns_name            = data.aws_ssm_parameter.cloudflare_zone_id.value
     vpc_id                  = module.vpc.vpc_id
     public_subnet_ids       = module.vpc.public_subnet_ids
     alb_security_group_ids  = [module.security_groups.alb_sg_id]
@@ -46,3 +38,11 @@ module "alb" {
     container_port          = var.container_port
 }
 
+module "acm"{
+  source                  = "./modules/acm"
+
+    domain_name        = var.domain_name
+    alb_dns_name       = module.alb.alb_dns_name
+    project_name       = var.project_name
+    environment        = var.environment
+}

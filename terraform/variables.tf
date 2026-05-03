@@ -46,10 +46,8 @@ variable "repository_name" {
   default     = "fargate-threat-composer"
 }
 
-variable "alb_name" {
-  description = "Name of Application Load Balancer"
-  type        = string
-  default     = "fargate-alb"
+data "aws_ssm_parameter" "cloudflare_zone_id" {
+  name = "/fargate-threat-composer/cloudflare_zone_id"
 }
 
 variable "tg_name" {
@@ -67,6 +65,5 @@ variable "container_port" {
 variable "domain_name" {
   description = "DNS name"
   type        = string
-  default     = "https://tm.jpearson.com"
+  default     = "tm.j-pearson.com"
 }
-

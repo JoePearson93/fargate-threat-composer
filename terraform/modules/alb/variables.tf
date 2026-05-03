@@ -2,7 +2,7 @@ variable "project_name" {
   description = "Project name for resource naming"
   type        = string
 }
-variable "alb_name" {
+variable "alb_dns_name" {
   description = "Name of Application Load Balancer"
   type        = string
 }
