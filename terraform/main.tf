@@ -30,6 +30,7 @@ module "alb" {
   source                  = "./modules/alb"
   
     alb_dns_name            = data.aws_ssm_parameter.cloudflare_zone_id.value
+    certificate_arn         = module.acm.certificate_arn
     vpc_id                  = module.vpc.vpc_id
     public_subnet_ids       = module.vpc.public_subnet_ids
     alb_security_group_ids  = [module.security_groups.alb_sg_id]

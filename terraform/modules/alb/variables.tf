@@ -31,3 +31,8 @@ variable "container_port" {
   description = "Port the container listens on"
   type        = number
 }
+
+variable "certificate_arn" {
+  description = "ACM certificate ARN"
+  type        = string
+}
