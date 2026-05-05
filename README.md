@@ -35,21 +35,21 @@ IAM                         ECS task execution role and task service role
 S3 + DynnaoDB               Terraform remote state storage and state locking
 
 Terraform Structure
-
-Terraform/
+.
+├── backend.tf
 ├── main.tf
-├── variables.tf
+├── modules
+│   ├── acm
+│   ├── alb
+│   ├── ecr
+│   ├── iam
+│   ├── security-groups
+│   └── vpc
 ├── outputs.tf
 ├── provider.tf
-├── terraform.tf
-└── modules/
-    ├── vpc/
-    ├── security_groups/
-    ├── alb/
-    ├── acm/
-    ├── iam/
-    ├── ecr/
-    └── ecs/
+├── terraform.tfvars
+└── variables.tf
+
 Each module is self contained with its own main.tf, variables.tf and outputs.tf.
 
 Tech Stack
