@@ -16,6 +16,16 @@ variable "environment" {
   default     = "prod"
 }
 
+variable "fargate_task_execution_role" {
+  description = "ECS Task Execution Role"
+  type        = string
+}
+
+variable "fargate_task_service_role" {
+  description = "ECS Task Service Role."
+   type        = string
+}
+
 variable "vpc_cidr" {
   description = "CIDR block for VPC"
   type        = string

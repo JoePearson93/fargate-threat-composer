@@ -12,9 +12,18 @@ module "security_groups" {
   source                  = "./modules/security-groups"
   
     vpc_id                  = module.vpc.vpc_id
-    ecs_port                = 8080
+    ecs_port                = var.ecs_port
     project_name            = var.project_name
     environment             = var.environment
+}
+
+module "iam" {
+  source             = "./modules/iam"
+
+    project_name                = var.project_name
+    environment                 = var.environment
+    fargate_task_execution_role = var.fargate_task_execution_role
+    fargate_task_service_role   = var.fargate_task_service_role
 }
 
 module "ecr" {
