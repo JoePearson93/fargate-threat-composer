@@ -11,30 +11,30 @@ Internet → Route53 → ALB (public subnets) → ECS Fargate Tasks (private sub
 
 Key design decisions:
 
-ECS tasks run in private subnets — not directly accessible from the internet
-All inbound traffic routes through the Application Load Balancer
-NAT Gateway handles outbound traffic from private subnets
-HTTPS enforced via ACM certificate — HTTP redirects to HTTPS
-Container runs on port 8080, ALB handles SSL termination
+Key design decisions:
 
+- ECS tasks run in private subnets — not directly accessible from the internet
+- All inbound traffic routes through the Application Load Balancer
+- NAT Gateway handles outbound traffic from private subnets
+- HTTPS enforced via ACM certificate — HTTP redirects to HTTPS
+- Container runs on port 8080, ALB handles SSL termination
 
 Architecture diagram coming soon
 
 Infrastructure Components
 
-Component                   Details
-VPC                         Custom VPC with public and private subnets across 2 AZs
-Subnets                     2 public subnets (ALB, NAT Gateway), 2 private subnets (ECS tasks)
-Internet Gateway            Public internet access for ALB
-NAT Gateway                 Outbound internet access for ECS tasks in private subnets
-ALB                         Application Load Balancer with HTTP → HTTPS redirect
-ACM                         SSL certificate for HTTPS
-ECS Fargate                 Containerised app, no EC2 instances to manage 
-ECR                         Docker image repository      
-IAM                         ECS task execution role and task service role
-S3 + DynnaoDB               Terraform remote state storage and state locking
+VPC - Custom VPC with public and private subnets across 2 AZs
+Subnets - 2 public subnets (ALB, NAT Gateway), 2 private subnets (ECS tasks)
+Internet Gateway - Public internet access for ALB
+NAT Gateway - Outbound internet access for ECS tasks in private subnets
+ALB - Application Load Balancer with HTTP → HTTPS redirect
+ACM - SSL certificate for HTTPS
+ECS Fargate - Containerised app, no EC2 instances to manage 
+ECR - Docker image repository      
+IAM - ECS task execution role and task service role
+S3 + DynamoDB - Terraform remote state storage and state locking
 
-this:
+
 ## Terraform Structure
 
 ```
