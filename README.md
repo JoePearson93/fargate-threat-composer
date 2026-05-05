@@ -34,7 +34,10 @@ ECR                         Docker image repository
 IAM                         ECS task execution role and task service role
 S3 + DynnaoDB               Terraform remote state storage and state locking
 
-Terraform Structure
+this:
+## Terraform Structure
+
+```
 .
 ├── backend.tf
 ├── main.tf
@@ -49,6 +52,7 @@ Terraform Structure
 ├── provider.tf
 ├── terraform.tfvars
 └── variables.tf
+```
 
 Each module is self contained with its own main.tf, variables.tf and outputs.tf.
 
