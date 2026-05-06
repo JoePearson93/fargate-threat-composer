@@ -38,6 +38,21 @@ variable "container_port" {
   type        = number
 }
 
+variable "task_count" {
+  description = "define how many ECS tasks running"
+  type        = number
+}
+
+variable "private_subnet_ids" {
+  description = "Subnet private IDs"
+  type       = list(string)
+}
+
+variable "ecs_security_group_id" {
+  description = "Security group for ECS task"
+  type        = string
+}
+
 variable "project_name" {
   description = "Project name for resource naming"
   type        = string

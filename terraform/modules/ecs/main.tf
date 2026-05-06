@@ -14,16 +14,6 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
   capacity_providers = ["FARGATE"]
 }
 
-resource "aws_ecs_service" "main" {
-  name    = var.service_name
-  cluster = aws_ecs_cluster.main.id
-
-     tags = {
-    Name = "${var.project_name}-ecs-service"
-    environment = var.environment
-  }
-}
-
 # ECS Task Definition
 
 resource "aws_ecs_task_definition" "main" {
@@ -54,4 +44,18 @@ resource "aws_ecs_task_definition" "main" {
 TASK_DEFINITION
 }
 
-~
+# ECS Service
+
+resource "aws_ecs_service" "main" {
+  name            = "${var.project_name}-ecs-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.main.arn
+  desired_count   = var.task_count
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = var.private_subnet_ids
+    security_groups  = [var.ecs_security_group_id]
+    assign_public_ip = false
+  }
+}
