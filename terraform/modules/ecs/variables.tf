@@ -23,6 +23,21 @@ variable "fargate_memory" {
     type        = string
 }
 
+variable "aws_region" {
+  description = "aws region where the resouces will be created"
+  type        = string
+}
+
+variable "cw_log_group" {
+  description = "CloudWatch log group name for ECS container logs"
+  type        = string
+}
+
+variable "cw_log_stream"{
+  description = "CloudWatch log stream prefix for ECS container logs"
+  type        = string
+}
+
 variable "task_role_arn" {
   description = "ARN of the ECS task role"
   type        = string
@@ -58,6 +73,10 @@ variable "project_name" {
   type        = string
 }
 
+variable "target_group_arn"{
+  description = " ARN for ECS ALB target group"
+  type        = string
+}
 
 variable "environment" {
   description = "The environment name (dev, staging, prod)"

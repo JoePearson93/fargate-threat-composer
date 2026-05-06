@@ -33,6 +33,15 @@ resource "aws_ecs_task_definition" "main" {
     "image": "${var.ecr_repository_url}",
     "memory": ${var.fargate_memory},
     "networkMode": "awsvpc",
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${var.cw_log_group}",
+                "awslogs-region": "${var.aws_region}",
+                "awslogs-stream-prefix": "${var.cw_log_stream}"
+            }
+        },
+
     "portMappings": [
       {
         "containerPort": ${var.container_port},
@@ -58,4 +67,14 @@ resource "aws_ecs_service" "main" {
     security_groups  = [var.ecs_security_group_id]
     assign_public_ip = false
   }
-}
+
+  load_balancer {
+    target_group_arn = var.target_group_arn
+    container_name   = var.project_name
+    container_port   = var.container_port
+  }
+} 
+
+  resource "aws_cloudwatch_log_group" "main" {
+  name = "/ecs/${var.project_name}-cw-logs"
+  }

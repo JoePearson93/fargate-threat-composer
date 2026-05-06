@@ -1,4 +1,4 @@
-variable "region" {
+variable "aws_region" {
   description = "aws region where the resouces will be created"
   type        = string
   default     = "eu-west-2"
@@ -77,6 +77,18 @@ variable "fargate_memory" {
     description = "Amount of Fargate memory"
     type        = number
     default     = 2048
+}
+
+variable "cw_log_group" {
+  description = "CloudWatch log group name for ECS container logs"
+  type        = string
+  default     = "/ecs/fargate-threat-composer"
+}
+
+variable "cw_log_stream"{
+  description = "CloudWatch log stream prefix for ECS container logs"
+  type        = string
+  default     = "ecs"
 }
 
 variable "task_count" {
