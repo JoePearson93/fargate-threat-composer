@@ -60,14 +60,17 @@ module "acm"{
 module "ecs" {
   source             = "./modules/ecs"
     
-    cluster_name        = var.cluster_name
-    ecr_repository_url  = var.ecr_repository_url
-    service_name        = var.service_name
-    fargate_cpu         = var.fargate_cpu
-    fargate_memory      = var.fargate_memory
-    task_role_arn       = module.iam.tasks_service_role
-    execution_role_arn  = module.iam.tasks_execution_role
-    container_port      = var.container_port
-    project_name        = var.project_name
-    environment         = var.environment
+    cluster_name           = var.cluster_name
+    ecr_repository_url     = var.ecr_repository_url
+    service_name           = var.service_name
+    fargate_cpu            = var.fargate_cpu
+    fargate_memory         = var.fargate_memory
+    task_role_arn          = module.iam.tasks_service_role
+    execution_role_arn     = module.iam.tasks_execution_role
+    task_count             = var.task_count
+    container_port         = var.container_port
+    private_subnet_ids     = module.vpc.private_subnet_ids
+    ecs_security_group_id  = module.security_groups.ecs_sg_id
+    project_name           = var.project_name
+    environment            = var.environment
 }

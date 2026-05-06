@@ -79,6 +79,12 @@ variable "fargate_memory" {
     default     = 2048
 }
 
+variable "task_count" {
+  description = "define how many ECS tasks running"
+  type        = number
+  default     = 1
+}
+
 data "aws_ssm_parameter" "cloudflare_zone_id" {
   name = "/fargate-threat-composer/cloudflare_zone_id"
 }
