@@ -44,16 +44,39 @@ variable "private_subnet_cidrs" {
   default     = ["10.0.2.0/24", "10.0.3.0/24"]
 }
 
-variable "ecs_port" {
-  description = "port for application container to call"
-  type        = number
-  default     = 8080
-}
-
 variable "repository_name" {
   description = "Name of the ECR repository"
   type        = string
   default     = "fargate-threat-composer"
+}
+
+variable "cluster_name"{
+  description = "Name of ecs cluster"
+  type        = string
+  default     = "tm-cluster"
+}
+
+  variable "ecr_repository_url" {
+    description = "URL for ecr repository"
+    type        = string
+}
+
+variable "service_name" {
+  description = "ECS service name"
+  type        = string
+  default     ="tm-service"
+}
+
+variable "fargate_cpu" {
+    description = "Amount of Fargate CPU"
+    type        = number
+    default     = 1024
+}
+
+variable "fargate_memory" {
+    description = "Amount of Fargate memory"
+    type        = number
+    default     = 2048
 }
 
 data "aws_ssm_parameter" "cloudflare_zone_id" {

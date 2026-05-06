@@ -12,7 +12,7 @@ module "security_groups" {
   source                  = "./modules/security-groups"
   
     vpc_id                  = module.vpc.vpc_id
-    ecs_port                = var.ecs_port
+    container_port          = var.container_port
     project_name            = var.project_name
     environment             = var.environment
 }
@@ -55,4 +55,19 @@ module "acm"{
     alb_dns_name       = module.alb.alb_dns_name
     project_name       = var.project_name
     environment        = var.environment
+}
+
+module "ecs" {
+  source             = "./modules/ecs"
+    
+    cluster_name        = var.cluster_name
+    ecr_repository_url  = var.ecr_repository_url
+    service_name        = var.service_name
+    fargate_cpu         = var.fargate_cpu
+    fargate_memory      = var.fargate_memory
+    task_role_arn       = module.iam.tasks_service_role
+    execution_role_arn  = module.iam.tasks_execution_role
+    container_port      = var.container_port
+    project_name        = var.project_name
+    environment         = var.environment
 }

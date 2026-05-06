@@ -8,7 +8,7 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "ecs_port" {
+variable "container_port" {
   description = "port for application container to call"
   type        = number
 }

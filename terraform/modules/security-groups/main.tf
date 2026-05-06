@@ -44,8 +44,8 @@ resource "aws_security_group" "ecs" {
 
   ingress {
     description     = "Allow traffic from ALB"
-    from_port       = var.ecs_port
-    to_port         = var.ecs_port
+    from_port       = var.container_port
+    to_port         = var.container_port
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
