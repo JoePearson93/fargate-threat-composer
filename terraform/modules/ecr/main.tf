@@ -5,17 +5,17 @@ data "aws_ecr_repository" "main" {
 resource "aws_ecr_lifecycle_policy" "main" {
   repository = data.aws_ecr_repository.main.name
 
-policy = jsonencode({
+  policy = jsonencode({
     rules = [
       {
         rulePriority = 1
         description  = "Keep last 5 images"
-        selection    = {
+        selection = {
           tagStatus   = "any"
           countType   = "imageCountMoreThan"
           countNumber = 5
         }
-        action       = {
+        action = {
           type = "expire"
         }
       }

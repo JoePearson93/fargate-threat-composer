@@ -25,7 +25,7 @@ resource "aws_ecs_task_definition" "main" {
   task_role_arn            = var.task_role_arn
   execution_role_arn       = var.execution_role_arn
 
-   container_definitions = <<TASK_DEFINITION
+  container_definitions = <<TASK_DEFINITION
 [
   {
     "name": "${var.project_name}",
@@ -73,8 +73,8 @@ resource "aws_ecs_service" "main" {
     container_name   = var.project_name
     container_port   = var.container_port
   }
-} 
+}
 
-  resource "aws_cloudwatch_log_group" "main" {
+resource "aws_cloudwatch_log_group" "main" {
   name = "/ecs/${var.project_name}-cw-logs"
-  }
+}

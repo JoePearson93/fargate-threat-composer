@@ -30,7 +30,7 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name = "${var.project_name}-alb-sg"
+    Name        = "${var.project_name}-alb-sg"
     environment = var.environment
   }
 }
@@ -59,7 +59,7 @@ resource "aws_security_group" "ecs" {
   }
 
   tags = {
-    Name = "${var.project_name}-ecs-sg"
+    Name        = "${var.project_name}-ecs-sg"
     environment = var.environment
   }
 }

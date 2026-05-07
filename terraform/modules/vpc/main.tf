@@ -50,7 +50,7 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "${var.project_name}-igw"
+    Name        = "${var.project_name}-igw"
     environment = var.environment
   }
 }
@@ -61,7 +61,7 @@ resource "aws_eip" "nat" {
   domain = "vpc"
 
   tags = {
-    Name = "${var.project_name}-nat-eip"
+    Name        = "${var.project_name}-nat-eip"
     environment = var.environment
   }
 
@@ -75,7 +75,7 @@ resource "aws_nat_gateway" "main" {
   subnet_id     = aws_subnet.public[0].id
 
   tags = {
-    Name = "${var.project_name}-nat-gateway"
+    Name        = "${var.project_name}-nat-gateway"
     environment = var.environment
   }
 
@@ -92,7 +92,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "${var.project_name}-PublicRouteTable"
+    Name        = "${var.project_name}-PublicRouteTable"
     environment = var.environment
   }
 }
@@ -116,7 +116,7 @@ resource "aws_route_table" "private" {
   }
 
   tags = {
-    Name = "${var.project_name}-PrivateRouteTable"
+    Name        = "${var.project_name}-PrivateRouteTable"
     environment = var.environment
   }
 }

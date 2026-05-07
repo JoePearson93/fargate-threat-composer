@@ -1,28 +1,28 @@
 # Application load balancer
 
 resource "aws_lb" "main" {
-  name               = var.alb_dns_name
+  name               = "${var.project_name}-alb"
   internal           = false
   load_balancer_type = "application"
   subnets            = var.public_subnet_ids
   security_groups    = var.alb_security_group_ids
 
   enable_deletion_protection = false
-  
+
   tags = {
-    Name = "${var.project_name}-alb"
+    Name        = "${var.project_name}-alb"
     environment = var.environment
   }
 }
 
 # Listener for HTTP traffic
- 
+
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.main.arn
   port              = 80
   protocol          = "HTTP"
 
- default_action {
+  default_action {
     type = "redirect"
 
     redirect {

@@ -5,7 +5,7 @@ variable "fargate_task_execution_role" {
 
 variable "fargate_task_service_role" {
   description = "ECS Task Service Role."
-   type        = string
+  type        = string
 }
 
 variable "project_name" {

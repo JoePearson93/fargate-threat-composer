@@ -1,12 +1,12 @@
-variable "cluster_name"{
+variable "cluster_name" {
   description = "Name of ecs cluster"
   type        = string
 }
 
-  variable "ecr_repository_url" {
-    description = "URL for ecr repository"
-    type        = string
-  }
+variable "ecr_repository_url" {
+  description = "URL for ecr repository"
+  type        = string
+}
 
 variable "service_name" {
   description = "ECS service name"
@@ -14,13 +14,13 @@ variable "service_name" {
 }
 
 variable "fargate_cpu" {
-    description = "Amount of Fargate CPU"
-    type        = string
+  description = "Amount of Fargate CPU"
+  type        = string
 }
 
 variable "fargate_memory" {
-    description = "Amount of Fargate memory"
-    type        = string
+  description = "Amount of Fargate memory"
+  type        = string
 }
 
 variable "aws_region" {
@@ -33,7 +33,7 @@ variable "cw_log_group" {
   type        = string
 }
 
-variable "cw_log_stream"{
+variable "cw_log_stream" {
   description = "CloudWatch log stream prefix for ECS container logs"
   type        = string
 }
@@ -60,7 +60,7 @@ variable "task_count" {
 
 variable "private_subnet_ids" {
   description = "Subnet private IDs"
-  type       = list(string)
+  type        = list(string)
 }
 
 variable "ecs_security_group_id" {
@@ -73,7 +73,7 @@ variable "project_name" {
   type        = string
 }
 
-variable "target_group_arn"{
+variable "target_group_arn" {
   description = " ARN for ECS ALB target group"
   type        = string
 }

@@ -1,25 +1,3 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 6"
-    }
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "~> 5"
-    }
-  }
-}
-
-data "aws_ssm_parameter" "cloudflare_zone_id" {
-  name = "/fargate-threat-composer/cloudflare_zone_id"
-}
-
-data "aws_ssm_parameter" "cloudflare_api_token" {
-  name = "/fargate-threat-composer/cloudflare_api_token"
-}
-
-
 resource "aws_acm_certificate" "cert" {
   domain_name       = var.domain_name
   validation_method = "DNS"
@@ -30,23 +8,35 @@ resource "aws_acm_certificate" "cert" {
   }
 }
 
-resource "cloudflare_dns_record" "acm_validation" {
-  zone_id = data.aws_ssm_parameter.cloudflare_zone_id.value
-  name    = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_name
-  type    = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_type
-  content = tolist(aws_acm_certificate.cert.domain_validation_options)[0].resource_record_value
-  ttl     = 300
+resource "aws_route53_record" "cert_validation" {
+  for_each = {
+    for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  }
+
+  zone_id = var.hosted_zone_id
+  name    = each.value.name
+  type    = each.value.type
+  records = [each.value.record]
+  ttl     = 60
 }
 
 resource "aws_acm_certificate_validation" "cert" {
   certificate_arn         = aws_acm_certificate.cert.arn
-  validation_record_fqdns = [cloudflare_dns_record.acm_validation.name]
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
-resource "cloudflare_dns_record" "main_dns_record" {
-  zone_id = data.aws_ssm_parameter.cloudflare_zone_id.value
+resource "aws_route53_record" "alb" {
+  zone_id = var.hosted_zone_id
   name    = var.domain_name
-  ttl     = 300
-  content = var.alb_dns_name
-  type    = "CNAME"
+  type    = "A"
+
+  alias {
+    name                   = var.alb_dns_name
+    zone_id                = var.alb_zone_id
+    evaluate_target_health = true
+  }
 }

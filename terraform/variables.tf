@@ -23,7 +23,7 @@ variable "fargate_task_execution_role" {
 
 variable "fargate_task_service_role" {
   description = "ECS Task Service Role."
-   type        = string
+  type        = string
 }
 
 variable "vpc_cidr" {
@@ -50,42 +50,42 @@ variable "repository_name" {
   default     = "fargate-threat-composer"
 }
 
-variable "cluster_name"{
+variable "cluster_name" {
   description = "Name of ecs cluster"
   type        = string
   default     = "tm-cluster"
 }
 
-  variable "ecr_repository_url" {
-    description = "URL for ecr repository"
-    type        = string
+variable "ecr_repository_url" {
+  description = "URL for ecr repository"
+  type        = string
 }
 
 variable "service_name" {
   description = "ECS service name"
   type        = string
-  default     ="tm-service"
+  default     = "tm-service"
 }
 
 variable "fargate_cpu" {
-    description = "Amount of Fargate CPU"
-    type        = number
-    default     = 1024
+  description = "Amount of Fargate CPU"
+  type        = number
+  default     = 1024
 }
 
 variable "fargate_memory" {
-    description = "Amount of Fargate memory"
-    type        = number
-    default     = 2048
+  description = "Amount of Fargate memory"
+  type        = number
+  default     = 2048
 }
 
 variable "cw_log_group" {
   description = "CloudWatch log group name for ECS container logs"
   type        = string
-  default     = "/ecs/fargate-threat-composer"
+  default     = "/ecs/fargate-threat-composer-cw-logs"
 }
 
-variable "cw_log_stream"{
+variable "cw_log_stream" {
   description = "CloudWatch log stream prefix for ECS container logs"
   type        = string
   default     = "ecs"
@@ -97,16 +97,6 @@ variable "task_count" {
   default     = 1
 }
 
-data "aws_ssm_parameter" "cloudflare_zone_id" {
-  name = "/fargate-threat-composer/cloudflare_zone_id"
-}
-
-variable "tg_name" {
-  description = "The name of the Target Group for Application Load Balancer"
-  type        = string
-  default     = "fargate-tg"
-}
-
 variable "container_port" {
   description = "Port the container listens on"
   type        = number
@@ -116,5 +106,15 @@ variable "container_port" {
 variable "domain_name" {
   description = "DNS name"
   type        = string
-  default     = "tm.j-pearson.com"
+  default     = "tm.joepearson.dev"
+}
+
+variable "hosted_zone_id" {
+  description = "Route53 hosted zone ID"
+  type        = string
+}
+
+variable "alb_zone_id" {
+  description = "Hosted zone ID of the ALB"
+  type        = string
 }
