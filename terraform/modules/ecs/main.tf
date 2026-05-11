@@ -14,6 +14,12 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
   capacity_providers = ["FARGATE"]
 }
 
+# CloudWatch Log Group
+
+resource "aws_cloudwatch_log_group" "main" {
+  name = "/ecs/${var.project_name}-cw-logs"
+}
+
 # ECS Task Definition
 
 resource "aws_ecs_task_definition" "main" {
@@ -33,15 +39,14 @@ resource "aws_ecs_task_definition" "main" {
     "image": "${var.ecr_repository_url}",
     "memory": ${var.fargate_memory},
     "networkMode": "awsvpc",
-        "logConfiguration": {
-            "logDriver": "awslogs",
-            "options": {
-                "awslogs-group": "${var.cw_log_group}",
-                "awslogs-region": "${var.aws_region}",
-                "awslogs-stream-prefix": "${var.cw_log_stream}"
-            }
-        },
-
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${var.cw_log_group}",
+        "awslogs-region": "${var.aws_region}",
+        "awslogs-stream-prefix": "${var.cw_log_stream}"
+      }
+    },
     "portMappings": [
       {
         "containerPort": ${var.container_port},
@@ -51,6 +56,10 @@ resource "aws_ecs_task_definition" "main" {
   }
 ]
 TASK_DEFINITION
+
+  lifecycle {
+    ignore_changes = [container_definitions]
+  }
 }
 
 # ECS Service
@@ -73,8 +82,8 @@ resource "aws_ecs_service" "main" {
     container_name   = var.project_name
     container_port   = var.container_port
   }
-}
 
-resource "aws_cloudwatch_log_group" "main" {
-  name = "/ecs/${var.project_name}-cw-logs"
+  lifecycle {
+    ignore_changes = [task_definition]
+  }
 }
