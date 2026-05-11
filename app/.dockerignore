@@ -3,3 +3,26 @@ node_modules
 .gitignore
 Dockerfile
 .dockerignore
+
+# build output (gets regenerated anyway)
+build
+dist
+
+# local env files (security risk if copied in)
+.env
+.env.local
+.env.*.local
+
+# logs
+npm-debug.log*
+*.log
+
+# IDE/editor files
+.vscode
+.idea
+*.swp
+
+# test files (not needed in production image)
+**/*.test.*
+**/*.spec.*
+coverage
