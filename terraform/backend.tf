@@ -2,7 +2,7 @@ terraform {
   backend "s3" {
     bucket       = "fargate-threat-composer"
     key          = "terraform.tfstate"
-    region       = "eu-west-2"
+    region       = var.aws_region
     encrypt      = true
     use_lockfile = true
   }
