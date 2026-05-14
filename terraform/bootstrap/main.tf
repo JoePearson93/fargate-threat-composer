@@ -77,3 +77,85 @@ resource "aws_iam_role" "github_actions" {
 
 # 3. IAM Policy - Exact Permissions for the Pipeline
 
+data "aws_caller_identity" "current" {}
+
+data "aws_iam_policy_document" "github_actions_permissions" {
+  
+  statement {
+    sid    = "ECRAuth"
+    effect = "Allow"
+    actions = [
+      "ecr:GetAuthorizationToken",
+    ]
+    resources = ["*"] 
+  }
+
+  statement {
+    sid    = "ECRPushPull"
+    effect = "Allow"
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:CompleteLayerUpload",
+      "ecr:DescribeImages",
+      "ecr:DescribeRepositories",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:InitiateLayerUpload",
+      "ecr:PutImage",
+      "ecr:UploadLayerPart",
+    ]
+    resources = [
+      "arn:aws:ecr:${var.aws_region}:${data.aws_caller_identity.current.account_id}:repository/${var.repository_name}"
+    ]
+  }
+
+# ECS - register task definitions and update services
+
+  statement {
+    sid    = "ECSDeployment"
+    effect = "Allow"
+    actions = [
+      "ecs:UpdateService",
+      "ecs:RegisterTaskDefinition",
+      "ecs:DescribeServices",
+      "ecs:DescribeTaskDefinition",
+      "ecs:DescribeTasks",
+      "ecs:ListTasks",
+    ]
+    resources = ["*"]
+  }
+
+  # IAM - pass the ECS task execution role
+
+  statement {
+    sid    = "PassRole"
+    effect = "Allow"
+    actions = [
+      "iam:PassRole",
+    ]
+    resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.ecs_task_execution_role_name}",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.ecs_task_role_name}",
+    ]
+  }
+
+  # CloudWatch Logs - needed for task definition validation
+  statement {
+    sid    = "CloudWatchLogs"
+    effect = "Allow"
+    actions = [
+      "logs:DescribeLogGroups",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "github_actions" {
+  name   = "${var.project_name}-github-actions-policy"
+  policy = data.aws_iam_policy_document.github_actions_permissions.json
+}
+
+resource "aws_iam_role_policy_attachment" "github_actions" {
+  role       = aws_iam_role.github_actions.name
+  policy_arn = aws_iam_policy.github_actions.arn
+}

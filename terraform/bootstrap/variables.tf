@@ -30,3 +30,19 @@ variable "allowed_subjects" {
   type        = list(string)
   default     = []
 }
+
+variable "repository_name" {
+  description = "Name of the ECR repository"
+  type        = string
+  default     = "fargate-threat-composer"
+}
+
+variable "ecs_task_execution_role_name" {
+  description = "Name of the ECS task execution role"
+  type        = string
+}
+
+variable "ecs_task_role_name" {
+  description = "Name of the ECS task service role"
+  type        = string
+}
