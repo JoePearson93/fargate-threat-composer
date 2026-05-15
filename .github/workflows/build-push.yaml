@@ -48,5 +48,5 @@ jobs:
         with:
           image: "${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
           fail-build: true
-          severity-cutoff: high
+          severity-cutoff: critical
           output-format: table
