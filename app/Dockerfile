@@ -1,5 +1,5 @@
 # Stage 1 - Builder
-FROM node:20-alpine.12-alpine3.19@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN DISABLE_ESLINT_PLUGIN=true yarn build
 
 # Stage 2 - Runtime
-FROM nginxinc/nginx-unprivileged@sha256:edb491677402a15454df38254e3736b57a0467f8fd9c77a6add23e6f65a92533
+FROM nginx:alpine@sha256:feb6f75a08aa55b44576f98c15b8859819ecf54f3e4d2157f42c2d01cb58a3d2
 
 WORKDIR /usr/share/nginx/html
 
@@ -20,7 +20,14 @@ COPY --from=builder /app/build .
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-USER nginx
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
+    && chown -R appuser:appgroup /usr/share/nginx/html \
+    && chown -R appuser:appgroup /var/cache/nginx \
+    && chown -R appuser:appgroup /var/log/nginx \
+    && touch /var/run/nginx.pid \
+    && chown appuser:appgroup /var/run/nginx.pid
+
+USER appuser
 
 EXPOSE 8080
 
