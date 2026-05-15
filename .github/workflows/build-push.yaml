@@ -1,0 +1,26 @@
+name: CI - Build & Push
+
+on:
+	push:
+		branches: [main]
+
+permissions:
+	id-token: write
+	contents: read
+	security-events: write
+
+env:
+	AWS_REGION: eu-west-2
+	ECR_REPOSITORY: fargate-threat-composer
+
+concurrency:
+	group: build-${{ github.ref }}
+
+jobs:
+	build-and-push:
+		name: Build, Scan & Push
+		runs-on: ubuntu-latest
+
+		steps:
+			- name: Checkout code
+				uses: actions/checkout@v4
