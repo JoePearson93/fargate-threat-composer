@@ -3,6 +3,9 @@ name: CI - Build & Push
 on:
   push:
     branches: [main]
+    paths:
+      - "app/**"
+      - ".github/workflows/build-push.yaml"
 
 permissions:
   id-token: write
@@ -38,9 +41,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} -f app/Dockerfile app/
+          docker build -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} .app/
         
       - name: Image scan using Grype
         uses: anchore/scan-action@v6
         with:
           image: "${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
+          fail-build: true
+          severity-cutoff: high
