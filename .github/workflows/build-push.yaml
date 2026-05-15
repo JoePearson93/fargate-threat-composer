@@ -16,11 +16,11 @@ env:
 concurrency:
 	group: build-${{ github.ref }}
 
-jobs:
-	build-and-push:
-		name: Build, Scan & Push
-		runs-on: ubuntu-latest
+	jobs:
+		build-and-push:
+			name: Build, Scan & Push
+			runs-on: ubuntu-latest
 
-		steps:
-			- name: Checkout code
-				uses: actions/checkout@v4
+			steps:
+				- name: Checkout code
+					uses: actions/checkout@v4
