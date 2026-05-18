@@ -5,7 +5,7 @@ on:
     workflows: ["CI - Build & Push"]
     types: [completed]
     branches: [main]
-    workflow_dispatch:
+  workflow_dispatch:
 
 concurrency:
   group: deploy-production
@@ -20,17 +20,18 @@ env:
   ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}-repo
   ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}-cluster
   ECS_SERVICE: ${{ vars.ECS_SERVICE }}-service
-  CONTAINER_NAME: ${{ vars.CONTAINER_NAME}}-container
+  CONTAINER_NAME: ${{ vars.CONTAINER_NAME }}-container
 
 jobs:
-  auth:
-    name: Authenticate to AWS
+  deploy:
+    name: Deploy to ECS
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    outputs:
-      image: ${{ steps.image.outputs.uri }}
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -41,13 +42,12 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
-  build:
-    name: Build push & deploy to ECS
-    runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Build image URI
+        id: image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          echo "uri=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}" >> $GITHUB_OUTPUT
 
       - name: Run Checkov action
         id: checkov
@@ -56,31 +56,24 @@ jobs:
           directory: terraform
           soft_fail: true
 
-      - name: Build image URI
-        id: image
-        env:
-          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-        run: |
-          echo "uri=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}" >> $GITHUB_OUTPUT
- 
-      - name: terraform validate
+      - name: Terraform validate
         uses: dflook/terraform-validate@v2
         id: validate
         with:
           path: terraform
 
-      - name: terraform fmt -check
+      - name: Terraform fmt check
         uses: dflook/terraform-fmt@v2
         with:
           path: terraform
 
-      - name: terraform plan
+      - name: Terraform plan
         uses: dflook/terraform-plan@v2
         with:
-          path: terraform   
+          path: terraform
 
-      - name: terraform apply
-        id: first-try
+      - name: Terraform apply
+        id: terraform-apply
         uses: dflook/terraform-apply@v2
         continue-on-error: true
         with:
