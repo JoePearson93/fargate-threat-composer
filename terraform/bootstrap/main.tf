@@ -79,14 +79,13 @@ resource "aws_iam_role" "github_actions" {
 
 data "aws_caller_identity" "current" {}
 
+
 data "aws_iam_policy_document" "github_actions_permissions" {
 
   statement {
     sid    = "ECRAuth"
     effect = "Allow"
-    actions = [
-      "ecr:GetAuthorizationToken",
-    ]
+    actions = ["ecr:GetAuthorizationToken"]
     resources = ["*"]
   }
 
@@ -102,32 +101,24 @@ data "aws_iam_policy_document" "github_actions_permissions" {
       "ecr:GetDownloadUrlForLayer",
       "ecr:InitiateLayerUpload",
       "ecr:PutImage",
-      "ecr:UploadLayerPart",
+      "ecr:UploadLayerPart"
     ]
     resources = [
       "arn:aws:ecr:${var.aws_region}:${data.aws_caller_identity.current.account_id}:repository/${var.repository_name}"
     ]
   }
 
-  
-statement {
+  statement {
     sid    = "TerraformReadAccess"
     effect = "Allow"
-
     actions = [
-      # Route53
       "route53:ListHostedZones",
       "route53:GetHostedZone",
       "route53:ListResourceRecordSets",
-
-      # ECR (for data sources)
+      "route53:ListTagsForResource",
       "ecr:ListTagsForResource",
-
-      # IAM (for data lookups)
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
-
-      # EC2 (for VPC module data sources)
       "ec2:DescribeAvailabilityZones",
       "ec2:DescribeVpcs",
       "ec2:DescribeSubnets",
@@ -135,12 +126,25 @@ statement {
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeInternetGateways"
     ]
-
     resources = ["*"]
   }
 
+  statement {
+    sid    = "TerraformProvisioning"
+    effect = "Allow"
+    actions = [
+      "ec2:*",
+      "ecs:*",
+      "ecr:*",
+      "iam:*",
+      "logs:*",
+      "route53:*",
+      "acm:*",
+      "elasticloadbalancing:*"
+    ]
 
-  # ECS - register task definitions and update services
+    resources = ["*"]
+  }
 
   statement {
     sid    = "ECSDeployment"
@@ -151,37 +155,29 @@ statement {
       "ecs:DescribeServices",
       "ecs:DescribeTaskDefinition",
       "ecs:DescribeTasks",
-      "ecs:ListTasks",
+      "ecs:ListTasks"
     ]
     resources = ["*"]
   }
 
-  # IAM - pass the ECS task execution role
-
   statement {
     sid    = "PassRole"
     effect = "Allow"
-    actions = [
-      "iam:PassRole",
-    ]
+    actions = ["iam:PassRole"]
     resources = [
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.ecs_task_execution_role_name}",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.ecs_task_role_name}",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.ecs_task_role_name}"
     ]
   }
-
-  # CloudWatch Logs - needed for task definition validation
 
   statement {
     sid    = "CloudWatchLogs"
     effect = "Allow"
     actions = [
-      "logs:DescribeLogGroups",
+      "logs:DescribeLogGroups"
     ]
     resources = ["*"]
   }
-
-  # S3 - Terraform state access
 
   statement {
     sid    = "S3StateObjects"
@@ -189,7 +185,7 @@ statement {
     actions = [
       "s3:GetObject",
       "s3:PutObject",
-      "s3:DeleteObject",
+      "s3:DeleteObject"
     ]
     resources = ["arn:aws:s3:::fargate-threat-composer/*"]
   }
@@ -197,11 +193,10 @@ statement {
   statement {
     sid    = "S3StateBucket"
     effect = "Allow"
-    actions = [
-      "s3:ListBucket",
-    ]
+    actions = ["s3:ListBucket"]
     resources = ["arn:aws:s3:::fargate-threat-composer"]
   }
+
 }
 
 resource "aws_iam_policy" "github_actions" {
