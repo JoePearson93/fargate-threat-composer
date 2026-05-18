@@ -109,6 +109,37 @@ data "aws_iam_policy_document" "github_actions_permissions" {
     ]
   }
 
+  
+statement {
+    sid    = "TerraformReadAccess"
+    effect = "Allow"
+
+    actions = [
+      # Route53
+      "route53:ListHostedZones",
+      "route53:GetHostedZone",
+      "route53:ListResourceRecordSets",
+
+      # ECR (for data sources)
+      "ecr:ListTagsForResource",
+
+      # IAM (for data lookups)
+      "iam:GetPolicy",
+      "iam:GetPolicyVersion",
+
+      # EC2 (for VPC module data sources)
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeVpcs",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeRouteTables",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeInternetGateways"
+    ]
+
+    resources = ["*"]
+  }
+
+
   # ECS - register task definitions and update services
 
   statement {
