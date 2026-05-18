@@ -20,3 +20,18 @@ env:
   ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}-cluster
   ECS_SERVICE: ${{ vars.ECS_SERVICE }}-service
   CONTAINER_NAME: ${{ vars.CONTAINER_NAME}}-container
+
+jobs:
+  build:
+    name: Build push & deploy to ECS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
