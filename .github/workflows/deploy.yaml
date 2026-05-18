@@ -1,0 +1,22 @@
+name: CD - Deploy to ECS
+
+on:
+  workflow_run:
+    workflows: ["CI - Build & Push"]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}-repo
+  ECS_CLUSTER: ${{ vars.ECS_CLUSTER }}-cluster
+  ECS_SERVICE: ${{ vars.ECS_SERVICE }}-service
+  CONTAINER_NAME: ${{ vars.CONTAINER_NAME}}-container
