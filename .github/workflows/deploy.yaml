@@ -61,3 +61,29 @@ jobs:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
         run: |
           echo "uri=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}" >> $GITHUB_OUTPUT
+      - name: terraform validate
+        uses: dflook/terraform-validate@v2
+        id: validate
+        with:
+          path: terraform
+
+      - name: terraform fmt
+        uses: dflook/terraform-fmt@v2
+        with:
+          path: terraform
+
+      - name: terraform plan
+        uses: dflook/terraform-plan@v2
+        with:
+          path: terraform   
+
+      - name: terraform apply
+        id: first-try
+        uses: dflook/terraform-apply@v2
+        continue-on-error: true
+        with:
+          path: terraform
+          auto_approve: true
+
+
+ 
