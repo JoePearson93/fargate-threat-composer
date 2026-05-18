@@ -82,7 +82,7 @@ jobs:
 
   health-check:
     name: Post-Deploy Health Check
-    needs: build
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
       - name: Health check
