@@ -9,12 +9,12 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "fargate-threat-composer"
-    key            = "bootstrap/terraform.tfstate"
-    region         = "eu-west-2"
-    encrypt        = true
-    use_lockfile   = true
- }
+    bucket       = "fargate-threat-composer"
+    key          = "bootstrap/terraform.tfstate"
+    region       = "eu-west-2"
+    encrypt      = true
+    use_lockfile = true
+  }
 }
 
 provider "aws" {
@@ -32,11 +32,11 @@ resource "aws_iam_openid_connect_provider" "github" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.github.certificates[0].sha1_fingerprint]
 
-tags = {
-  Name        = "${var.project_name}-github-actions-oidc"
-  environment = var.environment
-  Purpose     = "GitHub Actions CI/CD"
- }
+  tags = {
+    Name        = "${var.project_name}-github-actions-oidc"
+    environment = var.environment
+    Purpose     = "GitHub Actions CI/CD"
+  }
 }
 # 2. IAM Role for GitHub Actions
 
@@ -75,19 +75,19 @@ resource "aws_iam_role" "github_actions" {
   }
 }
 
-# 3. IAM Policy - Exact Permissions for the Pipeline
+# IAM Policy - Exact Permissions for the Pipeline
 
 data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "github_actions_permissions" {
-  
+
   statement {
     sid    = "ECRAuth"
     effect = "Allow"
     actions = [
       "ecr:GetAuthorizationToken",
     ]
-    resources = ["*"] 
+    resources = ["*"]
   }
 
   statement {
@@ -109,7 +109,7 @@ data "aws_iam_policy_document" "github_actions_permissions" {
     ]
   }
 
-# ECS - register task definitions and update services
+  # ECS - register task definitions and update services
 
   statement {
     sid    = "ECSDeployment"
@@ -140,6 +140,7 @@ data "aws_iam_policy_document" "github_actions_permissions" {
   }
 
   # CloudWatch Logs - needed for task definition validation
+
   statement {
     sid    = "CloudWatchLogs"
     effect = "Allow"
@@ -147,6 +148,28 @@ data "aws_iam_policy_document" "github_actions_permissions" {
       "logs:DescribeLogGroups",
     ]
     resources = ["*"]
+  }
+
+  # S3 - Terraform state access
+
+  statement {
+    sid    = "S3StateObjects"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = ["arn:aws:s3:::fargate-threat-composer/*"]
+  }
+
+  statement {
+    sid    = "S3StateBucket"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+    ]
+    resources = ["arn:aws:s3:::fargate-threat-composer"]
   }
 }
 
