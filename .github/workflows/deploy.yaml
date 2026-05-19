@@ -46,16 +46,18 @@ jobs:
         id: image
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          MAGE_TAG: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
-          SHA=${{ github.event.workflow_run.head_sha || github.sha }}
-          echo "uri=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$SHA" >> $GITHUB_OUTPUT
+          echo "uri=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Verify image exists in ECR
+        env:
+          IMAGE_TAG: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
           aws ecr describe-images \
-            --repository-name ${{ env.ECR_REPOSITORY }} \
-            --image-ids imageTag=${{ github.event.workflow_run.head_sha || github.sha }} \
-            --region ${{ env.AWS_REGION }}
+          --repository-name ${{ env.ECR_REPOSITORY }} \
+          --image-ids imageTag=$IMAGE_TAG \
+          --region ${{ env.AWS_REGION }}
 
       - name: Terraform plan
         uses: dflook/terraform-plan@v2
