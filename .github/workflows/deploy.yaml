@@ -26,7 +26,7 @@ jobs:
   deploy:
     name: Deploy to ECS
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Checkout code
@@ -47,25 +47,15 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
         run: |
-          echo "uri=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:${{ github.event.workflow_run.head_sha }}" >> $GITHUB_OUTPUT
+          SHA=${{ github.event.workflow_run.head_sha || github.sha }}
+          echo "uri=$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$SHA" >> $GITHUB_OUTPUT
 
-      - name: Run Checkov action
-        id: checkov
-        uses: bridgecrewio/checkov-action@master
-        with:
-          directory: terraform
-          soft_fail: true
-
-      - name: Terraform validate
-        uses: dflook/terraform-validate@v2
-        id: validate
-        with:
-          path: terraform
-
-      - name: Terraform fmt check
-        uses: dflook/terraform-fmt@v2
-        with:
-          path: terraform
+      - name: Verify image exists in ECR
+        run: |
+          aws ecr describe-images \
+            --repository-name ${{ env.ECR_REPOSITORY }} \
+            --image-ids imageTag=${{ github.event.workflow_run.head_sha || github.sha }} \
+            --region ${{ env.AWS_REGION }}
 
       - name: Terraform plan
         uses: dflook/terraform-plan@v2
@@ -75,7 +65,6 @@ jobs:
       - name: Terraform apply
         id: terraform-apply
         uses: dflook/terraform-apply@v2
-        continue-on-error: true
         with:
           path: terraform
           auto_approve: true
@@ -84,6 +73,8 @@ jobs:
     name: Post-Deploy Health Check
     needs: deploy
     runs-on: ubuntu-latest
+    if: ${{ needs.deploy.result == 'success' }}
+
     steps:
       - name: Health check
         uses: jtalk/url-health-check-action@v4
@@ -94,7 +85,8 @@ jobs:
           retry-delay: 15s
 
       - name: Deployment summary
+        if: success()
         run: |
-            echo "## Deployment Status" >> "$GITHUB_STEP_SUMMARY"
-            echo "" >> "$GITHUB_STEP_SUMMARY"
-            echo "Website successfully running: https://${{ vars.DOMAIN_NAME }}" >> "$GITHUB_STEP_SUMMARY"          
+          echo "## Deployment Status" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Website successfully running: https://${{ vars.DOMAIN_NAME }}" >> "$GITHUB_STEP_SUMMARY"

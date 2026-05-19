@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       terraform_destroy:
-        description: 'Type "Destroy" to confirm. Infrastruture will be deleted & cannot be undone.'
+        description: 'Type "DESTROY" to confirm. Infrastruture will be deleted & cannot be undone.'
         required: true
 
 permissions:
@@ -18,14 +18,27 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/Checkout@v4
+      uses: actions/checkout@v4
 
-    - name: setup Terraform
+    - name: Setup Terraform
       uses: hashicorp/setup-terraform@v4
+      with:
+        terraform_version: "1.15.3"
 
     - name: Configure AWS credentials (OIDC)
       uses: aws-actions/configure-aws-credentials@v4
       with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: eu-west-2
-  
+    
+    - name: Terraform Init
+      run: terraform init
+      working-directory: terraform
+
+    - name: Terraform Plan Destroy
+      run: terraform plan -destroy
+      working-directory: terraform
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
+      working-directory: terraform
