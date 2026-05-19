@@ -83,9 +83,9 @@ data "aws_caller_identity" "current" {}
 data "aws_iam_policy_document" "github_actions_permissions" {
 
   statement {
-    sid    = "ECRAuth"
-    effect = "Allow"
-    actions = ["ecr:GetAuthorizationToken"]
+    sid       = "ECRAuth"
+    effect    = "Allow"
+    actions   = ["ecr:GetAuthorizationToken"]
     resources = ["*"]
   }
 
@@ -161,8 +161,8 @@ data "aws_iam_policy_document" "github_actions_permissions" {
   }
 
   statement {
-    sid    = "PassRole"
-    effect = "Allow"
+    sid     = "PassRole"
+    effect  = "Allow"
     actions = ["iam:PassRole"]
     resources = [
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.ecs_task_execution_role_name}",
@@ -191,9 +191,9 @@ data "aws_iam_policy_document" "github_actions_permissions" {
   }
 
   statement {
-    sid    = "S3StateBucket"
-    effect = "Allow"
-    actions = ["s3:ListBucket"]
+    sid       = "S3StateBucket"
+    effect    = "Allow"
+    actions   = ["s3:ListBucket"]
     resources = ["arn:aws:s3:::fargate-threat-composer"]
   }
 
