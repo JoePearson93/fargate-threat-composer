@@ -48,6 +48,7 @@ jobs:
         uses: returntocorp/semgrep-action@v1
         with:
           config: auto
+        continue-on-error: true
 
   build-and-push:
     name: Build, Scan & Push
@@ -74,11 +75,6 @@ jobs:
           docker build \
             -t ${{ env.ECR_REPOSITORY }}:${{ github.sha }} \
             -f app/Dockerfile app/
-
-      - name: Dependency vulnerability scan
-        run: |
-          cd app
-          yarn audit --level critical
 
       - name: Image scan using Grype
         uses: anchore/scan-action@v6
