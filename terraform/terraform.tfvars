@@ -1,5 +1,5 @@
 fargate_task_execution_role = "tm-ecs-execution-role"
 fargate_task_service_role   = "tm-ecs-service-role"
-ecr_repository_url          = "236664667477.dkr.ecr.eu-west-2.amazonaws.com/fargate-threat-composer@sha256:974714bf3316110eac07d7643fd21f510678c9951690f4925e3edab564e723cc"
+ecr_repository_url = "236664667477.dkr.ecr.eu-west-2.amazonaws.com/fargate-threat-composer:latest"
 hosted_zone_id              = "Z06939763G06TPX3UZP2X"
 alb_zone_id                 = "ZHURV8PSTC4K8"
