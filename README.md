@@ -88,6 +88,8 @@ curl http://localhost:8080/health
 }
 ```
 
+![Docker Health Check](images/01-container-health-check.png)
+
 ## How To Deploy
 Documentation: [Deployment Guide](docs/deployment.md) (bootstrap, CI/CD and Teardown)
 
