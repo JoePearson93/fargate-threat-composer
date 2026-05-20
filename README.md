@@ -13,7 +13,7 @@ Production-grade containerised application deployed on AWS using ECS Fargate, pr
 Internet → Route53 (tm.joepearson.dev) → ALB (public subnets) → ECS Fargate Tasks (private subnets) → NAT Gateway (outbound only)
 ```
 
-## Walkthrough of the application in action
+## Application Demo
 
 [![Deployment Demo](images/03-loom-video.png)](https://www.loom.com/share/ce77817a57ee440197340155c9d07333)
 
