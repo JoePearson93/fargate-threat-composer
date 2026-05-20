@@ -65,6 +65,29 @@ url http://localhost:8080/health
 ```
 The Threat Composer UI will be available at http://localhost:8080
 
+## Local Docker Health Check
+
+The container exposes a health endpoint to validate application availability before deployment to ECS/Fargate.
+
+```bash
+docker ps
+```
+
+```bash
+CONTAINER ID   IMAGE                     STATUS
+12ab34cd56ef   threat-composer:latest   Up 2 minutes (healthy)
+```
+
+```bash
+curl http://localhost:8080/health
+```
+
+```json
+{
+  "status": "ok"
+}
+```
+
 ## How To Deploy
 Documentation: [Deployment Guide](docs/deployment.md) (bootstrap, CI/CD and Teardown)
 
