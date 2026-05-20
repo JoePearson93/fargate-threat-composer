@@ -26,12 +26,12 @@ https://tm.joepearson.dev
 
 This repo uses separate GitHub Actions workflows:
 
-- Build & Deploy (CI): Builds the Docker image, runs a Trivy vulnerability scan, pushes to AWS ECR, then updates the ECS task definition with the new image and triggers a rolling deployment, waiting for service stability before completing.
+- Build & Deploy (CI): Builds the Docker image, runs a Grype vulnerability scan, pushes to AWS ECR, then updates the ECS task definition with the new image and triggers a rolling deployment, waiting for service stability before completing.
 - Terraform Plan (CD): Runs a Checkov IaC security scan and generates a Terraform plan artifact for review before any infrastructure changes are applied.
 - Terraform Deploy (CD): Runs Checkov, then executes Terraform fmt, validate, plan and apply, followed by a /health endpoint check to confirm the deployment succeeded.
 Terraform Destroy: A manually triggered workflow for full infrastructure teardown.
 
-
+---
 
 **Key design decisions:**
 
@@ -85,6 +85,8 @@ url http://localhost:8080/health
 ```
 The Threat Composer UI will be available at http://localhost:8080
 
+---
+
 ## Local Docker Health Check
 
 The container exposes a health endpoint to validate application availability before deployment to ECS/Fargate.
@@ -110,9 +112,12 @@ curl http://localhost:8080/health
 
 ![Docker Health Check](images/01-container-health-check.png)
 
+---
+
 ## How To Deploy
 Documentation: [Deployment Guide](docs/deployment.md) (bootstrap, CI/CD and Teardown)
 
+---
 
 ## Terraform Structure
 
@@ -205,5 +210,3 @@ Each module is self contained with its own `main.tf`, `variables.tf` and `output
 - WAF on the ALB for additional security
 - Multi environment setup (dev, staging, prod) using Terraform workspaces
 - Shift left security with Checkov in pre-commit hooks locally
-
----
