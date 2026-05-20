@@ -7,6 +7,19 @@ Production-grade containerised application deployed on AWS using ECS Fargate, pr
 
 > Architecture diagram coming soon
 
+**Traffic Flow:**
+
+```
+Internet → Route53 (tm.joepearson.dev) → ALB (public subnets) → ECS Fargate Tasks (private subnets) → NAT Gateway (outbound only)
+```
+
+## Walkthrough of the application in action
+
+[![Deployment Demo](images/03-loom-video.png)](https://www.loom.com/share/ce77817a57ee440197340155c9d07333)
+
+The Threat Composer web application deployed on AWS ECS Fargate, accessible via a custom domain with HTTPS encryption at 
+https://tm.joepearson.dev
+
 ## Deployment Pipeline
 
 ![Deployment Pipeline](images/02-deployment-pipeline.png)
@@ -18,11 +31,7 @@ This repo uses separate GitHub Actions workflows:
 - Terraform Deploy (CD): Runs Checkov, then executes Terraform fmt, validate, plan and apply, followed by a /health endpoint check to confirm the deployment succeeded.
 Terraform Destroy: A manually triggered workflow for full infrastructure teardown.
 
-**Traffic Flow:**
 
-```
-Internet → Route53 (tm.joepearson.dev) → ALB (public subnets) → ECS Fargate Tasks (private subnets) → NAT Gateway (outbound only)
-```
 
 **Key design decisions:**
 
