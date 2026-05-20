@@ -24,13 +24,6 @@ https://tm.joepearson.dev
 
 ![Deployment Pipeline](images/02-deployment-pipeline.png)
 
-This repo uses separate GitHub Actions workflows:
-
-- Build & Deploy (CI): Builds the Docker image, runs a Grype vulnerability scan, pushes to AWS ECR, then updates the ECS task definition with the new image and triggers a rolling deployment, waiting for service stability before completing.
-- Terraform Plan (CD): Runs a Checkov IaC security scan and generates a Terraform plan artifact for review before any infrastructure changes are applied.
-- Terraform Deploy (CD): Runs Checkov, then executes Terraform fmt, validate, plan and apply, followed by a /health endpoint check to confirm the deployment succeeded.
-Terraform Destroy: A manually triggered workflow for full infrastructure teardown.
-
 ---
 
 **Key design decisions:**
