@@ -5,7 +5,7 @@ Production-grade containerised application deployed on AWS using ECS Fargate, pr
 
 ## Architecture Overview
 
-![Architecture Diagram](./images/architecture-diagram.png)
+![Architecture Diagram](./images/04-architecture-diagram.png)
 
 **Traffic Flow:**
 
