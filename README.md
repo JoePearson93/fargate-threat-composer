@@ -1,4 +1,4 @@
-# Threat Composer — AWS ECS Fargate Infrastructure
+# Threat Composer - AWS ECS Fargate Infrastructure
 
 Production-grade containerised application deployed on AWS using ECS Fargate, provisioned end to end with Terraform following infrastructure as code best practices and GitHub Actions CI/CD (OIDC).
 
